@@ -1,0 +1,16 @@
+CC=gcc
+CFLAGS=-Wall -Wextra -pedantic
+
+mutex: lab2_mutex.o
+	$(CC) -o mutex lab2_mutex.o $(CFLAGS)
+
+lab2_mutex.o: lab2_mutex.c
+	$(CC) -c lab2_mutex.c $(CFLAGS)
+
+
+
+sem: lab2_sem.o
+	$(CC) -o sem lab2_sem.o $(CFLAGS)
+
+lab2_sem.o: lab2_sem.c
+	$(CC) -c lab2_sem.c $(CFLAGS)
