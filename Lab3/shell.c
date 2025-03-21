@@ -27,6 +27,27 @@ void print_pwd(void) {
     }
 }
 
+void run_process(void (*func)(void)) {
+
+    pid_t pid = fork();
+
+    if (pid < 0) {
+
+        perror("fork failed");
+
+    } else if (pid == 0) { // child process
+
+        func();
+        exit(0);
+
+    } else {
+
+        int status;
+        waitpid(pid, &status, 0);
+        printf("Foreground process exited with code %d\n", WEXITSTATUS(status));
+    }
+}
+
 void run_command(char *command, char *args[], int background) {
 
     //new process
@@ -95,11 +116,11 @@ int main(void) {
         
         if (strcmp(input, "Help") == 0) {
 
-            print_help();
+            run_process(print_help);
 
         } else if (strcmp(input, "Pwd") == 0) {
 
-            print_pwd();
+            run_process(print_pwd);
 
         } else if (strncmp(input, "Run ", 4) == 0 || strncmp(input, "Bg ", 3) == 0) {
 
