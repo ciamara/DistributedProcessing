@@ -1,7 +1,7 @@
-from libdecoder import Decoder
 from encoder import Encoder
 import os
 import socket
+import libdecoder as dec
 
 GUESSED = 1
 HOST = "127.0.0.1"
@@ -45,20 +45,5 @@ if pid != 0:
     else:
         print("Decoder did not guess the code...")
 else:
-    decoder = Decoder()
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-
-        if s.recv(1024):
-            while True:
-                decoder.attempts += 1
-                decoder.guess()
-                decoder.print_guessed()
-                s.sendall(bytearray(decoder.guessed))
-                verified_guess = s.recv(1024)
-                if not verified_guess:
-                    break
-                if verified_guess == bytearray("finish", "utf-8"):
-                    break
-
-                decoder.feedback = verified_guess
+    decoder = dec.Decoder()
+    dec.run_decoder(HOST, PORT, decoder)
