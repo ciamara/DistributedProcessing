@@ -5,6 +5,8 @@ HOST = '127.0.0.1'
 PORT = 12345
 
 # get messages from server
+
+
 def receive_messages(sock):
     while True:
         try:
@@ -14,6 +16,7 @@ def receive_messages(sock):
         except:
             print("[!] Connection closed.")
             break
+
 
 def main():
     # input username
@@ -28,7 +31,8 @@ def main():
     # send username (log in)
     client.send(username.encode())
 
-    threading.Thread(target=receive_messages, args=(client,), daemon=True).start()
+    threading.Thread(target=receive_messages,
+                     args=(client,), daemon=True).start()
 
     # take messages (or exit)
     while True:
