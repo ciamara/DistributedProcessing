@@ -1,4 +1,5 @@
 from enum import Enum
+import math
 
 
 class Status(Enum):
@@ -40,11 +41,14 @@ class Worker:
     def changeStatus(self, new):
         self.status = new
 
-    def findPrime(self, method):
+    def findPrime(self, num, method):
 
         if method == Method.CHECK_DIVIDER:
-            #TODO check divider primality test method
-            return 1
+            for div in range(2, math.floor(math.sqrt(num)) + 1):
+                if  num % div == 0:
+                    return False
+            return True
+        
         elif method == Method.MILLER_RABIN:
             #TODO miller-rabin primality test method
             return 2
