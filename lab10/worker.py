@@ -83,11 +83,13 @@ class Worker:
             for div in range(2, math.floor(math.sqrt(num)) + 1):
                 if  num % div == 0:
                     return False
+            print("Check divider worker found prime number: " + str(num))
             return True
         
         elif method == Method.MILLER_RABIN:
 
             if num in (2, 3):
+                print("Miller-Rabin worker found prime number: " + str(num))
                 return True
             if num <= 1 or num % 2 == 0:
                 return False
@@ -101,12 +103,14 @@ class Worker:
             for _ in range(10):
                 if not self.millerTest(num, d, r):
                     return False
+            print("Miller-Rabin worker found prime number: " + str(num))
             return True
         
         elif method == Method.FERMAT:
             if num == 4:
                 return False
             elif num == 2 or num == 3:
+                print("Fermat worker found prime number: " + str(num))
                 return True
             
             else:
@@ -115,7 +119,7 @@ class Worker:
                     a = random.randint(2, num - 2)
                     if self.power(a, num - 1, num) != 1:
                         return False
-                        
+            print("Fermat worker found prime number: " + str(num))            
             return True
 
         elif method == Method.ERATOSTHENES_SIEVE:
@@ -132,7 +136,8 @@ class Worker:
                     for i in range(p * p, num + 1, p):
                         prime[i] = False
                 p += 1
-
+            if (prime[num] == True):
+                print("Eratosthenes-sieve worker found prime number: " + str(num))
             return prime[num]
             
         else:

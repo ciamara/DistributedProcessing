@@ -1,21 +1,32 @@
-from worker import Worker
-from worker import Status
-from worker import Method
+from checkDividerWorker import CheckDividerWorker
+from eratosthenesSieveWorker import EratosthenesSieveWorker
+from fermatWorker import FermatWorker
+from millerRabinWorker import MillerRabinWorker
+
+from multiprocessing import Process
 
 
 def main():
 
-    checkDividerWorker = Worker()
-    millerRabinWorker = Worker()
-    fermatWorker = Worker()
-    eratosthenesSieveWorker = Worker()
-
-    for num in range(2, 200):
-        if eratosthenesSieveWorker.findPrime(num, Method.ERATOSTHENES_SIEVE):
-            print("Number " + str(num) + " is prime")
-        else:
-            print("Number " + str(num) + " is not prime")
+    cdWorker = CheckDividerWorker()
+    mrWorker = MillerRabinWorker()
+    fWorker = FermatWorker()
+    esWorker = EratosthenesSieveWorker()
         
+    cdProc = Process(target=cdWorker.findPrime, args=(1000,))
+    mrProc = Process(target=mrWorker.findPrime, args=(1000,))
+    fProc = Process(target=fWorker.findPrime, args=(1000,))
+    esProc = Process(target=esWorker.findPrime, args=(1000,))
+
+    cdProc.start()
+    mrProc.start()
+    fProc.start()
+    esProc.start()
+
+    cdProc.join()
+    mrProc.join()
+    fProc.join()
+    esProc.join()
 
     return 0
 
