@@ -3,15 +3,21 @@ from eratosthenesSieveWorker import EratosthenesSieveWorker
 from fermatWorker import FermatWorker
 from millerRabinWorker import MillerRabinWorker
 
+from status import Status
+
 from multiprocessing import Process
 
 
 def main():
 
+    open('primes.txt', 'w').close()
+
     cdWorker = CheckDividerWorker()
     mrWorker = MillerRabinWorker()
     fWorker = FermatWorker()
     esWorker = EratosthenesSieveWorker()
+
+    cdWorker.changeStatus(Status.LEADER)
         
     cdProc = Process(target=cdWorker.findPrime, args=(1000,))
     mrProc = Process(target=mrWorker.findPrime, args=(1000,))

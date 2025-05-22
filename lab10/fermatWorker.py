@@ -3,18 +3,16 @@ import math
 from itertools import count
 import random
 
-
-class Status(Enum):
-    FOLLOWER = 1
-    LEADER = 2
-    CANDIDATE = 3
+from status import Status
 
 
 class FermatWorker:
 
-    def __init__(self, status=Status.FOLLOWER, epoch=0):
+    def __init__(self, status=Status.FOLLOWER, epoch=0, current_biggest=1, filePath = 'primes.txt'):
         self.status = status
         self.epoch = epoch
+        self.current_biggest = current_biggest
+        self.filePath = filePath
 
 
     def demandElection():
@@ -22,9 +20,20 @@ class FermatWorker:
     
     def vote():
         return 0
-
-    def request():
-        return 0
+    
+    def propose(self, num):
+        if self.status == Status.LEADER:
+            self.writeNum(num)
+            self.current_biggest = num
+            # TODO UPDATE ALL CURRENT BIGGEST
+        else:
+            raise Exception("Not implemented")
+            # TODO TO LEADER
+            # TODO UPDATE ALL CURRENT BIGGEST
+        return 1
+    
+    def updateCurrentBiggest(self, new_biggest):
+        self.current_biggest = new_biggest
 
     def sendCommand(self):
         if(self.status == Status.LEADER):
@@ -58,7 +67,9 @@ class FermatWorker:
             if num == 4:
                 continue
             elif num == 2 or num == 3:
-                print("Fermat worker found prime number: " + str(num))
+                if num > self.current_biggest:
+                    print("Fermat worker found prime number: " + str(num))
+                    self.propose(num)
             else:
                 is_probably_prime = True
                 for _ in range(10):  # 10 iterations for better confidence
@@ -67,5 +78,7 @@ class FermatWorker:
                         is_probably_prime = False
                         break
                 if is_probably_prime:
-                    print("Fermat worker found prime number: " + str(num))    
+                    if num > self.current_biggest:
+                        print("Fermat worker found prime number: " + str(num))  
+                        self.propose(num)  
         

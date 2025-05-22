@@ -3,18 +3,16 @@ import math
 from itertools import count
 import random
 
-
-class Status(Enum):
-    FOLLOWER = 1
-    LEADER = 2
-    CANDIDATE = 3
+from status import Status
 
 
 class CheckDividerWorker:
 
-    def __init__(self, status=Status.FOLLOWER, epoch=0):
+    def __init__(self, status=Status.FOLLOWER, epoch=0, current_biggest=1, filePath = 'primes.txt'):
         self.status = status
         self.epoch = epoch
+        self.current_biggest = current_biggest
+        self.filePath = filePath
 
 
     def demandElection():
@@ -22,19 +20,28 @@ class CheckDividerWorker:
     
     def vote():
         return 0
-
-    def request():
-        return 0
-
-    def sendCommand(self):
-        if(self.status == Status.LEADER):
-            return 1
-        return 0
     
-
+    def writeNum(self, num):
+        with open("primes.txt", "a") as f:
+            f.write(str(num) + "\n")
+        return
+    
+    def propose(self, num):
+        if self.status == Status.LEADER:
+            self.writeNum(num)
+            self.current_biggest = num
+            # TODO UPDATE ALL CURRENT BIGGEST
+        else:
+            raise Exception("Not implemented")
+            # TODO TO LEADER
+            # TODO UPDATE ALL CURRENT BIGGEST
+        return 1
+    
+    def updateCurrentBiggest(self, new_biggest):
+        self.current_biggest = new_biggest
+  
     def changeStatus(self, new):
         self.status = new
-
 
     def findPrime(self, stop):
 
@@ -43,6 +50,8 @@ class CheckDividerWorker:
                 if num % div == 0:
                     break
             else:
-                print("Check divider worker found prime number: " + str(num))
+                if num > self.current_biggest:
+                    print("Check divider worker found prime number: " + str(num))
+                    self.propose(num)
             
         

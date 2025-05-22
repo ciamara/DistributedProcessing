@@ -3,18 +3,16 @@ import math
 from itertools import count
 import random
 
-
-class Status(Enum):
-    FOLLOWER = 1
-    LEADER = 2
-    CANDIDATE = 3
+from status import Status
 
 
 class MillerRabinWorker:
 
-    def __init__(self, status=Status.FOLLOWER, epoch=0):
+    def __init__(self, status=Status.FOLLOWER, epoch=0, current_biggest=1, filePath = 'primes.txt'):
         self.status = status
         self.epoch = epoch
+        self.current_biggest = current_biggest
+        self.filePath = filePath
 
 
     def demandElection():
@@ -22,14 +20,25 @@ class MillerRabinWorker:
     
     def vote():
         return 0
-
-    def request():
-        return 0
+    
+    def propose(self, num):
+        if self.status == Status.LEADER:
+            self.writeNum(num)
+            self.current_biggest = num
+            # TODO UPDATE ALL CURRENT BIGGEST
+        else:
+            raise Exception("Not implemented")
+            # TODO TO LEADER
+            # TODO UPDATE ALL CURRENT BIGGEST
+        return 1
 
     def sendCommand(self):
         if(self.status == Status.LEADER):
             return 1
         return 0
+    
+    def updateCurrentBiggest(self, new_biggest):
+        self.current_biggest = new_biggest
     
 
     def changeStatus(self, new):
@@ -58,7 +67,9 @@ class MillerRabinWorker:
         for num in range(2, stop):
 
             if num in (2, 3):
-                print("Miller-Rabin worker found prime number: " + str(num))
+                if num > self.current_biggest:
+                    print("Miller-Rabin worker found prime number: " + str(num))
+                    self.propose(num)
                 continue
             if num <= 1 or num % 2 == 0:
                 continue
@@ -77,5 +88,7 @@ class MillerRabinWorker:
                     break
 
             if is_probably_prime:
-                print("Miller-Rabin worker found prime number: " + str(num))
+                if num > self.current_biggest:
+                    print("Miller-Rabin worker found prime number: " + str(num))
+                    self.propose(num)
         
